@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>個人 AI 發文器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Noto+Serif+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-bg: #1A1A1A;
+  --brand-bg-2: #2D2D2D;
+  --brand-bg-3: #232323;
+  --brand-pink: #F2B5C8;
+  --brand-pink-dim: #C68FA0;
+  --brand-gold: #E8B84B;
+  --brand-white: #FFFFFF;
+  --brand-white-dim: #B8B8B8;
+  --brand-border: #3A3A3A;
+  --brand-error: #E57373;
+  --brand-success: #81C784;
+  --brand-gradient: linear-gradient(135deg, #F2B5C8 0%, #8B6B8B 100%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--brand-bg);
+  color: var(--brand-white);
+  font-family: "Noto Serif TC", "Playfair Display", serif;
+  font-size: 16px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at top left, rgba(242,181,200,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(232,184,75,0.05) 0%, transparent 50%),
+    var(--brand-bg);
+  background-attachment: fixed;
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.eyebrow {
+  font-family: "Playfair Display", serif;
+  letter-spacing: 0.32em;
+  font-size: 12px;
+  color: var(--brand-pink);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+h1 {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 900;
+  font-size: clamp(28px, 4vw, 40px);
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Card */
+.card {
+  background: rgba(35, 35, 35, 0.6);
+  border: 1px solid var(--brand-border);
+  border-radius: 4px;
+  padding: 36px;
+  margin-bottom: 28px;
+  backdrop-filter: blur(6px);
+}
+
+.card.primary {
+  border-color: rgba(242,181,200,0.4);
+  background: rgba(242,181,200,0.04);
+}
+
+.card-title {
+  font-family: "Playfair Display", "Noto Serif TC", serif;
+  font-size: 18px;
+  letter-spacing: 0.18em;
+  color: var(--brand-gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--brand-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-title::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--brand-pink);
+  border-radius: 50%;
+}
+.card-desc {
+  color: var(--brand-white-dim);
+  font-size: 13px;
+  margin-bottom: 24px;
+  line-height: 1.7;
+}
+
+/* Form */
+.field-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+}
+.field-group.single { grid-template-columns: 1fr; }
+
+@media (max-width: 640px) {
+  .field-group { grid-template-columns: 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+.field.full { grid-column: 1 / -1; }
+
+.field label {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--brand-pink);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.field label .required { color: var(--brand-gold); }
+.field label .hint {
+  color: var(--brand-white-dim);
+  font-weight: 400;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.field input,
+.field textarea,
+.field select {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--brand-border);
+  border-radius: 2px;
+  color: var(--brand-white);
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  transition: border-color 0.2s, background 0.2s;
+}
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--brand-pink);
+  background: rgba(0,0,0,0.6);
+}
+.field textarea { min-height: 90px; resize: vertical; }
+.field textarea.tall { min-height: 140px; }
+.field textarea.huge { min-height: 280px; font-size: 14px; line-height: 1.7; }
+
+/* Checkbox */
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(232,184,75,0.06);
+  border: 1px solid rgba(232,184,75,0.3);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.checkbox-row input[type="checkbox"] {
+  margin-top: 4px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand-pink);
+}
+.checkbox-row .label-content {
+  flex: 1;
+}
+.checkbox-row .label-title {
+  color: var(--brand-gold);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+.checkbox-row .label-desc {
+  color: var(--brand-white-dim);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Submit */
+.submit-row {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 32px;
+}
+.btn {
+  background: var(--brand-pink);
+  color: var(--brand-bg);
+  border: none;
+  padding: 16px 56px;
+  font-family: "Noto Serif TC", serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: transform 0.15s, background 0.15s;
+}
+.btn:hover { background: var(--brand-gold); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled {
+  background: var(--brand-bg-2);
+  color: var(--brand-white-dim);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--brand-pink);
+  border: 1px solid var(--brand-pink);
+  padding: 10px 24px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+.btn-secondary:hover {
+  background: var(--brand-pink);
+  color: var(--brand-bg);
+}
+
+/* Result */
+#result-area { display: none; }
+#result-area.show { display: block; }
+
+.score-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(232,184,75,0.08);
+  border-left: 3px solid var(--brand-gold);
+  margin-bottom: 24px;
+}
+.score-num {
+  font-family: "Playfair Display", serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--brand-gold);
+  line-height: 1;
+}
+.score-label {
+  color: var(--brand-white-dim);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.score-reasoning {
+  color: var(--brand-white-dim);
+  font-size: 13px;
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.post-output {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--brand-border);
+  border-radius: 2px;
+  padding: 28px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: "Noto Serif TC", "Microsoft JhengHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--brand-white);
+  max-height: 600px;
+  overflow-y: auto;
+}
+.post-output::-webkit-scrollbar { width: 6px; }
+.post-output::-webkit-scrollbar-track { background: var(--brand-bg-2); }
+.post-output::-webkit-scrollbar-thumb { background: var(--brand-pink-dim); border-radius: 3px; }
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* Loading */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 60px 24px;
+}
+.loading.show { display: block; }
+.spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--brand-border);
+  border-top-color: var(--brand-pink);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  color: var(--brand-pink);
+  letter-spacing: 0.12em;
+  font-size: 14px;
+}
+.loading-sub {
+  color: var(--brand-white-dim);
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* Error */
+.error-box {
+  display: none;
+  padding: 16px 20px;
+  background: rgba(229,115,115,0.1);
+  border-left: 3px solid var(--brand-error);
+  color: #FFB4B4;
+  font-size: 14px;
+  margin-bottom: 24px;
+  border-radius: 2px;
+  white-space: pre-wrap;
+}
+.error-box.show { display: block; }
+
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--brand-gold);
+  color: var(--brand-bg);
+  padding: 12px 24px;
+  border-radius: 2px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.3s;
+  pointer-events: none;
+  z-index: 100;
+}
+#toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+footer {
+  text-align: center;
+  margin-top: 48px;
+  color: var(--brand-white-dim);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+footer a { color: var(--brand-pink); text-decoration: none; }
+
+.tip-box {
+  background: rgba(232,184,75,0.05);
+  border-left: 2px solid var(--brand-gold);
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--brand-white-dim);
+  line-height: 1.7;
+}
+.tip-box strong { color: var(--brand-gold); }
+
+/* Monthly accumulator badge */
+.month-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(26,26,26,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--brand-border);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.month-bar .month-label {
+  color: var(--brand-pink);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.month-bar .month-value {
+  color: var(--brand-gold);
+  font-weight: 700;
+  font-family: "Playfair Display", serif;
+}
+.month-bar .reset-link {
+  background: none;
+  border: none;
+  color: var(--brand-white-dim);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.month-bar .reset-link:hover { color: var(--brand-pink); }
+
+/* Password modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+.modal-backdrop.show { display: flex; }
+.modal-card {
+  background: var(--brand-bg-3);
+  border: 1px solid var(--brand-pink);
+  border-radius: 4px;
+  padding: 36px 32px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 8px 40px rgba(242,181,200,0.15);
+}
+.modal-card .eyebrow {
+  font-family: "Playfair Display", serif;
+  letter-spacing: 0.32em;
+  font-size: 11px;
+  color: var(--brand-pink);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.modal-card h2 {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--brand-gold);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.modal-card p {
+  color: var(--brand-white-dim);
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 24px;
+  line-height: 1.7;
+}
+.modal-card input[type="password"] {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--brand-border);
+  border-radius: 2px;
+  color: var(--brand-white);
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  margin-bottom: 16px;
+  letter-spacing: 0.08em;
+}
+.modal-card input[type="password"]:focus {
+  outline: none;
+  border-color: var(--brand-pink);
+}
+.modal-card .modal-error {
+  display: none;
+  color: var(--brand-error);
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.modal-card .modal-error.show { display: block; }
+.modal-card button {
+  width: 100%;
+  background: var(--brand-pink);
+  color: var(--brand-bg);
+  border: none;
+  padding: 14px;
+  font-family: "Noto Serif TC", serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.modal-card button:hover { background: var(--brand-gold); }
+
+/* Cost display in result */
+.cost-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  background: rgba(242,181,200,0.06);
+  border-left: 3px solid var(--brand-pink);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.cost-bar .cost-main {
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  color: var(--brand-pink);
+  font-weight: 700;
+}
+.cost-bar .cost-detail {
+  color: var(--brand-white-dim);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  flex: 1;
+  min-width: 200px;
+}
+.cost-bar .cost-detail strong { color: var(--brand-pink); font-weight: 500; }
+
+/* ---------- 歷史紀錄 modal ---------- */
+.history-card {
+  max-width: 920px;
+  max-height: 88vh;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+}
+.history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--brand-border);
+  padding-bottom: 12px;
+}
+.history-head h2 {
+  margin: 0;
+  text-align: left;
+  font-size: 20px;
+}
+.history-body {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+}
+.history-empty {
+  text-align: center;
+  color: var(--brand-white-dim);
+  padding: 60px 20px;
+  font-size: 14px;
+}
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.history-item {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--brand-border);
+  border-radius: 3px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+}
+.history-item:hover {
+  border-color: var(--brand-pink);
+  background: rgba(242,181,200,0.06);
+}
+.history-item .item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+  gap: 12px;
+}
+.history-item .item-name {
+  font-weight: 700;
+  color: var(--brand-white);
+  font-size: 14px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.history-item .item-time {
+  color: var(--brand-white-dim);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.history-item .item-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--brand-white-dim);
+}
+.history-item .item-score {
+  color: var(--brand-gold);
+  font-weight: 700;
+}
+.history-item .item-preview {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--brand-white-dim);
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.history-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.detail-meta {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--brand-border);
+  border-radius: 3px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--brand-white-dim);
+  line-height: 1.7;
+}
+.detail-post {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--brand-pink);
+  border-radius: 3px;
+  padding: 16px 18px;
+  white-space: pre-wrap;
+  font-family: "Noto Serif TC", serif;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--brand-white);
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.detail-actions .btn {
+  flex: 0 0 auto;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Password gate modal -->
+<div class="modal-backdrop" id="auth-modal">
+  <form class="modal-card" id="auth-form">
+    <div class="eyebrow">Restricted</div>
+    <h2>請輸入存取密碼</h2>
+    <p>本工具受密碼保護,請輸入授權密碼繼續。</p>
+    <input type="password" id="auth-input" placeholder="存取密碼" autocomplete="off" autofocus>
+    <div class="modal-error" id="auth-error">密碼錯誤,請重試</div>
+    <button type="submit">進入</button>
+  </form>
+</div>
+
+<div class="month-bar" id="month-bar">
+  <span class="month-label" id="month-label">本月累計</span>
+  <span><span class="month-value" id="month-count">0</span> 篇</span>
+  <span><span class="month-value" id="month-twd">NT$ 0</span></span>
+  <button type="button" class="reset-link" id="reset-month">重置</button>
+  <button type="button" class="reset-link" id="open-history">歷史紀錄</button>
+</div>
+
+<!-- 歷史紀錄 modal -->
+<div class="modal-backdrop" id="history-modal">
+  <div class="modal-card history-card">
+    <div class="history-head">
+      <h2 class="modal-title">歷史紀錄</h2>
+      <button type="button" class="reset-link" id="close-history">關閉</button>
+    </div>
+    <div class="history-body" id="history-body">
+      <div class="history-empty" id="history-empty">載入中...</div>
+      <div class="history-list" id="history-list"></div>
+      <div class="history-detail" id="history-detail" style="display:none;">
+        <button type="button" class="reset-link" id="back-to-list">← 回列表</button>
+        <div class="detail-meta" id="detail-meta"></div>
+        <div class="detail-post" id="detail-post"></div>
+        <div class="detail-actions">
+          <button type="button" class="btn btn-secondary" id="detail-copy">複製文案</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<header>
+  <div class="eyebrow">Private Group Buy</div>
+  <h1>個人 AI 發文器</h1>
+</header>
+
+<form id="post-form">
+
+<!-- 廠商素材(主) -->
+<section class="card primary">
+  <h2 class="card-title">廠商提供的原始素材</h2>
+  <p class="card-desc">把廠商給你的整段產品介紹貼進來,AI 會改寫成可直接貼 FB 的銷售文格式。</p>
+  <div class="field-group single">
+    <div class="field">
+      <label for="raw_material">原始素材 <span class="required">*</span></label>
+      <textarea id="raw_material" name="raw_material" class="huge" placeholder="貼廠商給的素材,例如:&#10;&#10;由專業調香師 × 芳療師共同打造,結合細緻香氛與天然精油的滾珠香氛精油,隨時隨地輕輕一滾,安撫身心、放鬆情緒。&#10;&#10;採用「Fine Fragrance 香氛油 + 精選精油」調製...&#10;&#10;主要植物油:向日葵籽油、甜杏仁油、橄欖油...&#10;&#10;香味選擇:&#10;#Mindful 靜心花果|松林靜心&#10;• 松木:提升活力與專注&#10;..." required></textarea>
+    </div>
+    <div class="tip-box">
+      <strong>提醒:</strong>素材越完整,產出文案越好。素材不夠時,啟用下方的「全網評價搜尋」讓 AI 補雜誌報導/網友實測。如果有雜誌截圖能參考,把雜誌名稱寫在「額外指示」欄。
+    </div>
+  </div>
+</section>
+
+<!-- 產品內容(可選補充) -->
+<section class="card">
+  <h2 class="card-title">產品內容(可選補充)</h2>
+  <p class="card-desc">廠商素材夠完整可全空白。素材單薄、想強調某個賣點、或想加入個人試用感受時填這裡。</p>
+  <div class="field-group single">
+    <div class="field">
+      <label for="feature_emphasis">產品特色補強 / 這次想強調的賣點 <span class="hint">(條列或一段文字都可)</span></label>
+      <textarea id="feature_emphasis" name="feature_emphasis" placeholder="例:這次主打超強保濕、不黏膩、孕婦也能用。或:廠商素材沒提到但很重要的「韓國原裝、SGS 認證」。"></textarea>
+    </div>
+    <div class="field">
+      <label for="ingredients_usage">成分 / 材質 / 使用方法</label>
+      <textarea id="ingredients_usage" name="ingredients_usage" placeholder="例:含玻尿酸、神經醯胺、積雪草萃取。早晚洗臉後取適量塗抹臉部,輕輕按摩至吸收。"></textarea>
+    </div>
+    <div class="field">
+      <label for="target_pain">目標受眾 / 痛點</label>
+      <textarea id="target_pain" name="target_pain" placeholder="例:久坐辦公室的上班族媽媽,容易水腫、肩頸僵硬,想在家輕鬆 SPA。"></textarea>
+    </div>
+    <div class="field">
+      <label for="personal_experience">我的個人試用心得 <span class="hint">(這欄非常加分,讓 AI 寫得像妳)</span></label>
+      <textarea id="personal_experience" name="personal_experience" placeholder="例:我自己用了一週,早上起床浮腫消很多。我家妞晚上寫完功課滑一下說超舒服,連我先森下班也搶來用。"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- 團購規格 -->
+<section class="card">
+  <h2 class="card-title">團購規格</h2>
+  <p class="card-desc">必填 1-2 項即可,空白 AI 會推測或留空。</p>
+  <div class="field-group">
+    <div class="field">
+      <label for="month_label">月份標題</label>
+      <input type="text" id="month_label" name="month_label" placeholder="例:5月團、6月商品">
+    </div>
+    <div class="field">
+      <label for="team_price">團購價</label>
+      <input type="text" id="team_price" name="team_price" placeholder="例:$345">
+    </div>
+    <div class="field">
+      <label for="original_price">原價/市售價</label>
+      <input type="text" id="original_price" name="original_price" placeholder="例:$890">
+    </div>
+    <div class="field">
+      <label for="quick_hand">快手價優惠</label>
+      <input type="text" id="quick_hand" name="quick_hand" placeholder="例:快手前10個每個折20">
+    </div>
+    <div class="field full">
+      <label for="specs_list">規格/口味/顏色清單 <span class="hint">(用 # 分隔)</span></label>
+      <input type="text" id="specs_list" name="specs_list" placeholder="例:靜心#木質#森林 或 200#300">
+    </div>
+    <div class="field">
+      <label for="example_order">喊單範例</label>
+      <input type="text" id="example_order" name="example_order" placeholder="例:靜心+2,木質+1">
+    </div>
+    <div class="field">
+      <label for="deadline">結團時間</label>
+      <input type="text" id="deadline" name="deadline" placeholder="例:5/17">
+    </div>
+    <div class="field">
+      <label for="delivery">到貨時間</label>
+      <input type="text" id="delivery" name="delivery" placeholder="例:6月底 或 結團後一週">
+    </div>
+    <div class="field">
+      <label for="expiry">效期</label>
+      <input type="text" id="expiry" name="expiry" placeholder="例:2027/03">
+    </div>
+    <div class="field full">
+      <label for="shipping">運費/出貨方式</label>
+      <input type="text" id="shipping" name="shipping" placeholder="例:獨立團免運 / 滿$2000免運">
+    </div>
+  </div>
+</section>
+
+<!-- 個人風格 -->
+<section class="card">
+  <h2 class="card-title">個人風格</h2>
+  <p class="card-desc">填了文章會更像妳。沒填 AI 會用第三方角度寫(網友分享、Threads 上...),不會假裝是品牌主親自用過。</p>
+  <div class="field-group single">
+    <div class="field">
+      <label for="personal_experience">我的個人試用心得 <span class="hint">(任意寫,1-3 句最佳)</span></label>
+      <textarea id="personal_experience" name="personal_experience" placeholder="例:我自己用了一週,早上起床浮腫消很多。我家妞晚上寫完功課滑一下說超舒服,連我先森下班也搶來用。"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- 輸出設定 -->
+<section class="card">
+  <h2 class="card-title">輸出設定</h2>
+  <div class="field-group">
+    <div class="field">
+      <label for="length">文案長度</label>
+      <select id="length" name="length">
+        <option value="中(約 500-800 字,主流長度)">中(500-800 字,主流)</option>
+        <option value="短(約 300-500 字,適合限時閃團)">短(300-500 字,閃團)</option>
+        <option value="長(約 800-1200 字,深度介紹)">長(800-1200 字,深度)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="model">模型</label>
+      <select id="model" name="model">
+        <option value="claude-sonnet-4-5">Sonnet 4.5(推薦,品質+速度)</option>
+        <option value="claude-opus-4-6">Opus 4.6(最高品質,慢+貴)</option>
+        <option value="claude-haiku-4-5-20251001">Haiku 4.5(最快+最便宜)</option>
+      </select>
+    </div>
+    <div class="field full">
+      <label for="extra_notes">額外指示/特殊要求</label>
+      <textarea id="extra_notes" name="extra_notes" placeholder="例:這次主推聖誕節送禮、強調限量30盒、雜誌《Vogue》5月號有報導..."></textarea>
+    </div>
+    <div class="field full">
+      <label class="checkbox-row">
+        <input type="checkbox" id="use_web_search" name="use_web_search">
+        <span class="label-content">
+          <span class="label-title">啟用全網評價搜尋(會多花 5-15 秒)</span>
+          <span class="label-desc">AI 會主動搜 Threads / 小紅書 / Vogue / Elle / Cosme 等找評價,塞進「國內外網友與雜誌好評不斷」段落。建議高單價、新品、素材單薄時開啟。</span>
+        </span>
+      </label>
+    </div>
+    <div class="field">
+      <label for="exchange_rate">USD → TWD 匯率 <span class="hint">(用於費用換算,可手動更新)</span></label>
+      <input type="number" id="exchange_rate" name="exchange_rate" value="32" step="0.5" min="20" max="50">
+    </div>
+  </div>
+</section>
+
+<div class="submit-row">
+  <button type="submit" class="btn" id="submit-btn">產出團購文</button>
+</div>
+
+</form>
+
+<!-- Loading -->
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">產文中,請稍候...</div>
+  <div class="loading-sub" id="loading-sub">一般 10-30 秒,搜尋模式可能 30-60 秒</div>
+</div>
+
+<!-- Error -->
+<div class="error-box" id="error-box"></div>
+
+<!-- Result -->
+<section id="result-area" class="card">
+  <h2 class="card-title">產出文案</h2>
+
+  <div class="score-bar" id="score-bar" style="display:none;">
+    <div>
+      <div class="score-num" id="score-num">-</div>
+    </div>
+    <div style="flex:1;">
+      <div class="score-label">AI 自我評分 / 10 分</div>
+      <div class="score-reasoning" id="score-reasoning">-</div>
+    </div>
+  </div>
+
+  <div class="cost-bar" id="cost-bar" style="display:none;">
+    <div class="cost-main" id="cost-main">NT$ 0</div>
+    <div class="cost-detail" id="cost-detail">-</div>
+  </div>
+
+  <div class="post-output" id="post-output">-</div>
+
+  <div class="action-row">
+    <button class="btn btn-secondary" id="copy-btn" type="button">複製文案</button>
+    <button class="btn btn-secondary" id="copy-all-btn" type="button">複製全部(含評分)</button>
+    <button class="btn btn-secondary" id="regen-btn" type="button">重新產出</button>
+  </div>
+</section>
+
+<footer>
+  個人 AI 發文器 · 文案僅供參考,送出前請人工潤飾
+</footer>
+
+</div>
+
+<div id="toast">已複製到剪貼簿</div>
+
+<script>
+const form = document.getElementById('post-form');
+const submitBtn = document.getElementById('submit-btn');
+const loading = document.getElementById('loading');
+const loadingText = document.getElementById('loading-text');
+const loadingSub = document.getElementById('loading-sub');
+const errorBox = document.getElementById('error-box');
+const resultArea = document.getElementById('result-area');
+const postOutput = document.getElementById('post-output');
+const scoreBar = document.getElementById('score-bar');
+const scoreNum = document.getElementById('score-num');
+const scoreReasoning = document.getElementById('score-reasoning');
+const costBar = document.getElementById('cost-bar');
+const costMain = document.getElementById('cost-main');
+const costDetail = document.getElementById('cost-detail');
+const monthLabel = document.getElementById('month-label');
+const monthCount = document.getElementById('month-count');
+const monthTwd = document.getElementById('month-twd');
+const resetMonthBtn = document.getElementById('reset-month');
+const toast = document.getElementById('toast');
+
+let lastResult = null;
+
+// ---------- Password gate ----------
+const AUTH_KEY = 'summer_tg_access_token';
+const authModal = document.getElementById('auth-modal');
+const authForm = document.getElementById('auth-form');
+const authInput = document.getElementById('auth-input');
+const authError = document.getElementById('auth-error');
+
+function getAuthToken() {
+  try { return localStorage.getItem(AUTH_KEY) || ''; } catch { return ''; }
+}
+function setAuthToken(t) {
+  try { localStorage.setItem(AUTH_KEY, t); } catch {}
+}
+function clearAuthToken() {
+  try { localStorage.removeItem(AUTH_KEY); } catch {}
+}
+function showAuthModal(withError = false) {
+  authError.classList.toggle('show', withError);
+  authInput.value = '';
+  authModal.classList.add('show');
+  setTimeout(() => authInput.focus(), 50);
+}
+function hideAuthModal() {
+  authModal.classList.remove('show');
+  authError.classList.remove('show');
+}
+
+authForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = authInput.value.trim();
+  if (!v) return;
+  setAuthToken(v);
+  hideAuthModal();
+});
+
+// 開頁面就 gate(沒密碼進不來)
+if (!getAuthToken()) {
+  showAuthModal(false);
+}
+
+// ---------- Monthly accumulator ----------
+function getMonthKey(d = new Date()) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `summer_tg_writer_usage_${y}-${m}`;
+}
+function getMonthLabel(d = new Date()) {
+  return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月累計`;
+}
+function loadMonth() {
+  const key = getMonthKey();
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : { count: 0, twd: 0, usd: 0 };
+  } catch {
+    return { count: 0, twd: 0, usd: 0 };
+  }
+}
+function saveMonth(data) {
+  try {
+    localStorage.setItem(getMonthKey(), JSON.stringify(data));
+  } catch {}
+}
+function renderMonth() {
+  const data = loadMonth();
+  monthLabel.textContent = getMonthLabel();
+  monthCount.textContent = data.count;
+  monthTwd.textContent = `NT$ ${data.twd.toFixed(2)}`;
+}
+function addToMonth(twd, usd) {
+  const data = loadMonth();
+  data.count += 1;
+  data.twd = (data.twd || 0) + twd;
+  data.usd = (data.usd || 0) + usd;
+  saveMonth(data);
+  renderMonth();
+}
+resetMonthBtn.addEventListener('click', () => {
+  if (!confirm('確定要重置本月累計嗎?(只會清除本月的紀錄)')) return;
+  saveMonth({ count: 0, twd: 0, usd: 0 });
+  renderMonth();
+});
+renderMonth();
+
+// ---------- 歷史紀錄 ----------
+const historyModal = document.getElementById('history-modal');
+const historyList = document.getElementById('history-list');
+const historyEmpty = document.getElementById('history-empty');
+const historyDetail = document.getElementById('history-detail');
+const detailMeta = document.getElementById('detail-meta');
+const detailPost = document.getElementById('detail-post');
+
+function fmtTime(iso) {
+  const d = new Date(iso);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${yyyy}/${mm}/${dd} ${hh}:${mi}`;
+}
+
+async function openHistory() {
+  const token = getAuthToken();
+  if (!token) { showAuthModal(false); return; }
+  historyDetail.style.display = 'none';
+  historyList.style.display = 'flex';
+  historyList.innerHTML = '';
+  historyEmpty.style.display = 'block';
+  historyEmpty.textContent = '載入中...';
+  historyModal.classList.add('show');
+  try {
+    const res = await fetch('/.netlify/functions/history?action=list&limit=100', {
+      headers: { 'x-access-token': token }
+    });
+    if (res.status === 401) {
+      historyEmpty.textContent = '密碼錯誤,請刷新頁面重試';
+      return;
+    }
+    const json = await res.json();
+    if (!res.ok) {
+      historyEmpty.textContent = json.error || '載入失敗';
+      return;
+    }
+    if (!json.items || json.items.length === 0) {
+      historyEmpty.textContent = '還沒有任何產出紀錄';
+      return;
+    }
+    historyEmpty.style.display = 'none';
+    historyList.innerHTML = '';
+    json.items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      const usedSearch = item.used_search ? ' · 含搜尋' : '';
+      const score = item.score !== null && item.score !== undefined ? `${item.score}/10` : '-';
+      const cost = item.cost_twd !== undefined ? `NT$ ${Number(item.cost_twd).toFixed(2)}` : '-';
+      div.innerHTML = `
+        <div class="item-top">
+          <div class="item-name"></div>
+          <div class="item-time"></div>
+        </div>
+        <div class="item-meta">
+          <span class="item-score">評分 </span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="item-preview"></div>
+      `;
+      div.querySelector('.item-name').textContent = item.product_name || '(未命名)';
+      div.querySelector('.item-time').textContent = fmtTime(item.iso);
+      const metaSpans = div.querySelectorAll('.item-meta span');
+      metaSpans[0].textContent = `評分 ${score}`;
+      metaSpans[1].textContent = `${item.model || '-'}${usedSearch}`;
+      metaSpans[2].textContent = cost;
+      div.querySelector('.item-preview').textContent = item.preview || '';
+      div.addEventListener('click', () => openHistoryItem(item.id));
+      historyList.appendChild(div);
+    });
+  } catch (err) {
+    historyEmpty.textContent = `載入錯誤: ${err.message}`;
+  }
+}
+
+async function openHistoryItem(id) {
+  const token = getAuthToken();
+  try {
+    const res = await fetch(`/.netlify/functions/history?action=get&id=${encodeURIComponent(id)}`, {
+      headers: { 'x-access-token': token }
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      alert(json.error || '讀取失敗');
+      return;
+    }
+    historyList.style.display = 'none';
+    historyEmpty.style.display = 'none';
+    historyDetail.style.display = 'flex';
+    const usedSearch = json.used_search ? '含搜尋' : '不含搜尋';
+    detailMeta.innerHTML = '';
+    const metaTxt = `${fmtTime(json.iso)} · ${json.product_name}\n${json.model} · ${usedSearch} · NT$ ${Number(json.cost_twd||0).toFixed(2)}\n評分 ${json.score !== null && json.score !== undefined ? json.score+'/10' : '-'}${json.reasoning ? '\n理由:'+json.reasoning : ''}`;
+    detailMeta.textContent = metaTxt;
+    detailPost.textContent = json.post || '';
+    detailPost.dataset.text = json.post || '';
+  } catch (err) {
+    alert('讀取錯誤: ' + err.message);
+  }
+}
+
+document.getElementById('open-history').addEventListener('click', openHistory);
+document.getElementById('close-history').addEventListener('click', () => {
+  historyModal.classList.remove('show');
+});
+document.getElementById('back-to-list').addEventListener('click', () => {
+  historyDetail.style.display = 'none';
+  historyList.style.display = 'flex';
+});
+document.getElementById('detail-copy').addEventListener('click', () => {
+  copyToClipboard(detailPost.dataset.text || detailPost.textContent);
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  await generate();
+});
+
+document.getElementById('regen-btn').addEventListener('click', () => generate());
+
+document.getElementById('copy-btn').addEventListener('click', () => {
+  if (!lastResult) return;
+  copyToClipboard(lastResult.post);
+});
+
+document.getElementById('copy-all-btn').addEventListener('click', () => {
+  if (!lastResult) return;
+  let txt = lastResult.post || '';
+  if (lastResult.score !== null && lastResult.score !== undefined) {
+    txt += `\n\n---\n評分:${lastResult.score}/10`;
+    if (lastResult.reasoning) txt += `\n${lastResult.reasoning}`;
+  }
+  copyToClipboard(txt);
+});
+
+function copyToClipboard(text) {
+  if (!text) return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => showToast()).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showToast(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function showToast() {
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+function showLoading(on, msg) {
+  const ld = document.getElementById('loading');
+  const lt = document.getElementById('loading-text');
+  if (msg && lt) lt.textContent = msg;
+  ld.classList.toggle('show', !!on);
+}
+function showError(msg) {
+  const eb = document.getElementById('error-box');
+  eb.textContent = msg;
+  eb.classList.add('show');
+}
+function clearError() {
+  const eb = document.getElementById('error-box');
+  eb.classList.remove('show');
+  eb.textContent = '';
+}
+
+function gatherFormData() {
+  const fd = new FormData(form);
+  const obj = {};
+  for (const [k, v] of fd.entries()) {
+    obj[k] = typeof v === 'string' ? v.trim() : v;
+  }
+  obj.use_web_search = document.getElementById('use_web_search').checked;
+  const rate = parseFloat(document.getElementById('exchange_rate').value);
+  obj.exchange_rate = isNaN(rate) ? 32 : rate;
+  return obj;
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function genTaskId() {
+  return `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+async function generate() {
+  clearError();
+  const token = getAuthToken();
+  if (!token) {
+    showAuthModal(false);
+    return;
+  }
+  const data = gatherFormData();
+  if (!data.raw_material) {
+    showError('廠商素材不能空白');
+    return;
+  }
+
+  const submitBtn = document.getElementById('submit-btn');
+  const regenBtn = document.getElementById('regen-btn');
+  const resultArea = document.getElementById('result-area');
+  const postOutput = document.getElementById('post-output');
+  const costBar = document.getElementById('cost-bar');
+  const costMain = document.getElementById('cost-main');
+  const costDetail = document.getElementById('cost-detail');
+  const scoreBar = document.getElementById('score-bar');
+  const scoreNum = document.getElementById('score-num');
+  const scoreReasoning = document.getElementById('score-reasoning');
+
+  // Opus 二次密碼
+  if (data.model === 'claude-opus-4-6') {
+    const opusPw = window.prompt('使用 Opus 4.6 需輸入授權密碼\n(單篇約 NT$ 15-20,避免亂用燒錢)');
+    if (!opusPw) {
+      showError('已取消 Opus 產文');
+      return;
+    }
+    data.opus_password = opusPw.trim();
+  }
+
+  const taskId = genTaskId();
+  data.taskId = taskId;
+
+  submitBtn.disabled = true;
+  regenBtn.disabled = true;
+  const initialMsg = data.use_web_search
+    ? '丟單中(含全網搜尋,需 60-120 秒)...'
+    : '丟單中(背景執行,需 30-90 秒)...';
+  showLoading(true, initialMsg);
+
+  try {
+    // 1. 丟單到 background function
+    const res = await fetch('/.netlify/functions/generate-background', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (res.status === 401) {
+      // 區分:Opus 密碼錯誤 vs 主密碼錯誤
+      const j = await res.json().catch(() => ({}));
+      if (j.error && j.error.indexOf('Opus') >= 0) {
+        showError('Opus 密碼錯誤,請重試');
+        return;
+      }
+      clearAuthToken();
+      showAuthModal(true);
+      showError('密碼錯誤,請重新輸入');
+      return;
+    }
+
+    if (res.status === 400) {
+      const j = await res.json().catch(() => ({}));
+      showError(j.error || '輸入錯誤');
+      return;
+    }
+
+    // Netlify background function 會立刻回 202
+    if (res.status !== 202 && !res.ok) {
+      showError(`丟單失敗(HTTP ${res.status})`);
+      return;
+    }
+
+    // 2. 開始輪詢結果
+    const POLL_INTERVAL = 3000;
+    const MAX_WAIT_MS = 5 * 60 * 1000; // 5 分鐘
+    const startTime = Date.now();
+    let elapsed = 0;
+    let found = null;
+
+    while ((elapsed = Date.now() - startTime) < MAX_WAIT_MS) {
+      await sleep(POLL_INTERVAL);
+      const sec = Math.floor(elapsed / 1000);
+      showLoading(true, data.use_web_search
+        ? `產文中(含搜尋)...已等 ${sec} 秒`
+        : `產文中...已等 ${sec} 秒`);
+
+      try {
+        const pollRes = await fetch(`/.netlify/functions/history?action=get&id=${encodeURIComponent(taskId)}`, {
+          headers: { 'x-access-token': token }
+        });
+        if (pollRes.status === 404) continue; // 還沒寫進 blob,繼續等
+        if (pollRes.status === 401) {
+          clearAuthToken();
+          showAuthModal(true);
+          showError('密碼錯誤');
+          return;
+        }
+        if (!pollRes.ok) continue;
+        const rec = await pollRes.json();
+        if (rec.status === 'done') {
+          found = rec;
+          break;
+        }
+        if (rec.status === 'error') {
+          showError(rec.error_message || '產文失敗');
+          return;
+        }
+        // status === 'processing' 繼續等
+      } catch (e) {
+        // 網路錯誤,繼續輪詢
+      }
+    }
+
+    if (!found) {
+      showError('超過 5 分鐘還沒拿到結果,請重試或檢查 Netlify Functions log');
+      return;
+    }
+
+    // 3. 渲染結果
+    lastResult = {
+      post: found.post,
+      score: found.score,
+      reasoning: found.reasoning
+    };
+
+    postOutput.textContent = found.post || '(無內容)';
+    resultArea.classList.add('show');
+
+    if (found.score !== null && found.score !== undefined) {
+      scoreNum.textContent = found.score;
+      scoreReasoning.textContent = found.reasoning || '';
+      scoreBar.style.display = '';
+    } else {
+      scoreBar.style.display = 'none';
+    }
+
+    // 費用
+    if (found.cost_twd !== undefined) {
+      costMain.textContent = `本次花費 NT$ ${Number(found.cost_twd).toFixed(2)}`;
+      const usd = Number(found.cost_usd || 0).toFixed(4);
+      const model = found.model || data.model || '-';
+      const tokenInfo = found.usage
+        ? `輸入 ${found.usage.input_tokens || 0} / 輸出 ${found.usage.output_tokens || 0} tokens`
+        : '';
+      const search = data.use_web_search ? ' · 含全網搜尋' : '';
+      costDetail.textContent = `${model} · USD $${usd}${search}${tokenInfo ? ' · ' + tokenInfo : ''}`;
+      costBar.style.display = '';
+      addToMonth(Number(found.cost_twd) || 0, Number(found.cost_usd) || 0);
+    } else {
+      costBar.style.display = 'none';
+    }
+
+    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    showError(`網路或執行錯誤:${err.message}`);
+  } finally {
+    submitBtn.disabled = false;
+    regenBtn.disabled = false;
+    showLoading(false);
+  }
+}
+</script>
+</body>
+</html>

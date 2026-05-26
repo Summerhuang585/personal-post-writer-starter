@@ -1,0 +1,23 @@
+# Summer 私密社團團購文產文器 - Netlify 設定
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@netlify/blobs"]
+
+# Function 預設超時 10 秒,但 Anthropic API + web search 可能需要更長
+# 免費版最長 10 秒,Pro 版可調到 26 秒。如需更長請升級或減少 web search max_uses
+[functions."generate"]
+  timeout = 26
+
+# 安全 headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

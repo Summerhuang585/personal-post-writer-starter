@@ -1,0 +1,9 @@
+{
+  "name": "summer-tg-writer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Summer 私密社團團購文產文器",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

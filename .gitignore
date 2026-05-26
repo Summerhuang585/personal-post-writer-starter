@@ -1,0 +1,21 @@
+# Netlify CLI cache
+.netlify/
+
+# Dependencies
+node_modules/
+
+# Deployment artifacts
+deploy-*.zip
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Local env(絕對不能 commit)
+.env
+.env.local
