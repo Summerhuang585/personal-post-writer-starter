@@ -722,14 +722,14 @@ footer a { color: var(--brand-pink); text-decoration: none; }
 
 <form id="post-form">
 
-<!-- 廠商素材(主) -->
+<!-- 主要素材 -->
 <section class="card primary">
-  <h2 class="card-title">廠商提供的原始素材</h2>
-  <p class="card-desc">把廠商給你的整段產品介紹貼進來,AI 會改寫成可直接貼 FB 的銷售文格式。</p>
+  <h2 class="card-title">主要素材</h2>
+  <p class="card-desc">把你的素材整段貼進來,AI 會改寫成可直接貼 FB 的長文。素材可以是:廠商產品介紹、課程簡介、個人經歷、活動資訊、體驗心得等。</p>
   <div class="field-group single">
     <div class="field">
       <label for="raw_material">原始素材 <span class="required">*</span></label>
-      <textarea id="raw_material" name="raw_material" class="huge" placeholder="貼廠商給的素材,例如:&#10;&#10;由專業調香師 × 芳療師共同打造,結合細緻香氛與天然精油的滾珠香氛精油,隨時隨地輕輕一滾,安撫身心、放鬆情緒。&#10;&#10;採用「Fine Fragrance 香氛油 + 精選精油」調製...&#10;&#10;主要植物油:向日葵籽油、甜杏仁油、橄欖油...&#10;&#10;香味選擇:&#10;#Mindful 靜心花果|松林靜心&#10;• 松木:提升活力與專注&#10;..." required></textarea>
+      <textarea id="raw_material" name="raw_material" class="huge" placeholder="把你的素材整段貼進來,例如:&#10;&#10;[電商團購類]&#10;由專業調香師 × 芳療師打造,Fine Fragrance 香氛油 + 精選精油...&#10;主要植物油:向日葵籽油、甜杏仁油、橄欖油...&#10;&#10;[知識課程類]&#10;這堂課我會帶你 8 週從零打造 AI 工作流,包括...&#10;適合對象:小編、創業者、想用 AI 提效的職場人&#10;&#10;[生活分享類]&#10;今天帶妞去士林夜市,意外發現一間 30 年阿公賣的香雞排..." required></textarea>
     </div>
     <div class="tip-box">
       <strong>提醒:</strong>素材越完整,產出文案越好。素材不夠時,啟用下方的「全網評價搜尋」讓 AI 補雜誌報導/網友實測。如果有雜誌截圖能參考,把雜誌名稱寫在「額外指示」欄。
@@ -740,11 +740,11 @@ footer a { color: var(--brand-pink); text-decoration: none; }
 <!-- 產品內容(可選補充) -->
 <section class="card">
   <h2 class="card-title">產品內容(可選補充)</h2>
-  <p class="card-desc">廠商素材夠完整可全空白。素材單薄、想強調某個賣點、或想加入個人試用感受時填這裡。</p>
+  <p class="card-desc">主素材夠完整可全空白。素材單薄、想強調某個賣點、或想加入個人試用感受時填這裡。</p>
   <div class="field-group single">
     <div class="field">
       <label for="feature_emphasis">產品特色補強 / 這次想強調的賣點 <span class="hint">(條列或一段文字都可)</span></label>
-      <textarea id="feature_emphasis" name="feature_emphasis" placeholder="例:這次主打超強保濕、不黏膩、孕婦也能用。或:廠商素材沒提到但很重要的「韓國原裝、SGS 認證」。"></textarea>
+      <textarea id="feature_emphasis" name="feature_emphasis" placeholder="例:這次主打超強保濕、不黏膩、孕婦也能用。或:主素材沒提到但很重要的「韓國原裝、SGS 認證」。"></textarea>
     </div>
     <div class="field">
       <label for="ingredients_usage">成分 / 材質 / 使用方法</label>
@@ -761,50 +761,50 @@ footer a { color: var(--brand-pink); text-decoration: none; }
   </div>
 </section>
 
-<!-- 團購規格 -->
+<!-- 補充資訊 -->
 <section class="card">
-  <h2 class="card-title">團購規格</h2>
-  <p class="card-desc">必填 1-2 項即可,空白 AI 會推測或留空。</p>
+  <h2 class="card-title">補充資訊(依領域自由填,空白也行)</h2>
+  <p class="card-desc">電商團購類請填價格/規格/結團時間等;知識課程類請填課程價/開課日;生活分享類可全空。</p>
   <div class="field-group">
     <div class="field">
-      <label for="month_label">月份標題</label>
-      <input type="text" id="month_label" name="month_label" placeholder="例:5月團、6月商品">
+      <label for="month_label">期數標題 <span class="hint">(電商團購用)</span></label>
+      <input type="text" id="month_label" name="month_label" placeholder="例:5月團、Q3 課程、春季限定">
     </div>
     <div class="field">
-      <label for="team_price">團購價</label>
-      <input type="text" id="team_price" name="team_price" placeholder="例:$345">
+      <label for="team_price">主要價格</label>
+      <input type="text" id="team_price" name="team_price" placeholder="例:$345 / 課程 $5800 / 免費">
     </div>
     <div class="field">
-      <label for="original_price">原價/市售價</label>
+      <label for="original_price">原價/早鳥價 <span class="hint">(可選)</span></label>
       <input type="text" id="original_price" name="original_price" placeholder="例:$890">
     </div>
     <div class="field">
-      <label for="quick_hand">快手價優惠</label>
-      <input type="text" id="quick_hand" name="quick_hand" placeholder="例:快手前10個每個折20">
+      <label for="quick_hand">早鳥/限時優惠 <span class="hint">(可選)</span></label>
+      <input type="text" id="quick_hand" name="quick_hand" placeholder="例:前 10 名折 20 / 5/31 前報名打 9 折">
     </div>
     <div class="field full">
-      <label for="specs_list">規格/口味/顏色清單 <span class="hint">(用 # 分隔)</span></label>
-      <input type="text" id="specs_list" name="specs_list" placeholder="例:靜心#木質#森林 或 200#300">
+      <label for="specs_list">規格/方案/選項清單 <span class="hint">(用 # 分隔,如有多選項)</span></label>
+      <input type="text" id="specs_list" name="specs_list" placeholder="例:靜心#木質#森林 / 早鳥版#完整版 / 200ml#300ml">
     </div>
     <div class="field">
-      <label for="example_order">喊單範例</label>
-      <input type="text" id="example_order" name="example_order" placeholder="例:靜心+2,木質+1">
+      <label for="example_order">行動呼籲格式 <span class="hint">(電商團購用)</span></label>
+      <input type="text" id="example_order" name="example_order" placeholder="例:靜心+2,木質+1 / 留言「報名」/ 私訊「+1」">
     </div>
     <div class="field">
-      <label for="deadline">結團時間</label>
-      <input type="text" id="deadline" name="deadline" placeholder="例:5/17">
+      <label for="deadline">截止/期限 <span class="hint">(如有)</span></label>
+      <input type="text" id="deadline" name="deadline" placeholder="例:5/17 / 即日起到月底">
     </div>
     <div class="field">
-      <label for="delivery">到貨時間</label>
-      <input type="text" id="delivery" name="delivery" placeholder="例:6月底 或 結團後一週">
+      <label for="delivery">交付時間 <span class="hint">(如有)</span></label>
+      <input type="text" id="delivery" name="delivery" placeholder="例:6月底 / 報名後 3 天內收到課程連結">
     </div>
     <div class="field">
-      <label for="expiry">效期</label>
+      <label for="expiry">效期 <span class="hint">(如商品有)</span></label>
       <input type="text" id="expiry" name="expiry" placeholder="例:2027/03">
     </div>
     <div class="field full">
-      <label for="shipping">運費/出貨方式</label>
-      <input type="text" id="shipping" name="shipping" placeholder="例:獨立團免運 / 滿$2000免運">
+      <label for="shipping">其他補充 <span class="hint">(運費/出貨方式/特殊提醒)</span></label>
+      <input type="text" id="shipping" name="shipping" placeholder="例:獨立團免運 / 課程線上直播+錄影回看 / 寄送到府">
     </div>
   </div>
 </section>
@@ -862,7 +862,7 @@ footer a { color: var(--brand-pink); text-decoration: none; }
 </section>
 
 <div class="submit-row">
-  <button type="submit" class="btn" id="submit-btn">產出團購文</button>
+  <button type="submit" class="btn" id="submit-btn">產出文章</button>
 </div>
 
 </form>
@@ -879,7 +879,7 @@ footer a { color: var(--brand-pink); text-decoration: none; }
 
 <!-- Result -->
 <section id="result-area" class="card">
-  <h2 class="card-title">產出文案</h2>
+  <h2 class="card-title">產出文章</h2>
 
   <div class="score-bar" id="score-bar" style="display:none;">
     <div>
@@ -1227,7 +1227,7 @@ async function generate() {
   }
   const data = gatherFormData();
   if (!data.raw_material) {
-    showError('廠商素材不能空白');
+    showError('主要素材不能空白');
     return;
   }
 
